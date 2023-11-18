@@ -4,6 +4,8 @@ import AddContactForm from './AddContactForm';
 import ContactsList from './ContactsList';
 import FilterField from './FilterField';
 
+const LS_KEY = 'ls-contacts';
+
 export class App extends Component {
   state = {
     contacts: [],
@@ -46,6 +48,22 @@ export class App extends Component {
         .includes(this.state.filter.toLowerCase());
     });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(LS_KEY, JSON.stringify(this.state.contacts));
+    }
+  }
+
+  componentDidMount() {
+    const data = JSON.parse(localStorage.getItem(LS_KEY));
+
+    if (data !== null) {
+      this.setState({
+        contacts: data,
+      });
+    }
+  }
 
   render() {
     const { contacts, filter } = this.state;
